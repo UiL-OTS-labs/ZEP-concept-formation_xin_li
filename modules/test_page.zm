@@ -260,8 +260,8 @@ Page test_page
             }
 
             if (!test_page_overlay.start_feedback(this, correctness,
-                    stimulus.duration))
-                done(CONTINUE);
+                  stimulus.duration))
+                continuation.start(stimulus.expected_finish_time);
         }
 
         on_event:start()
@@ -270,6 +270,14 @@ Page test_page
         }
 
          on_event:message()
+        {
+            done(CONTINUE);
+        }
+    }
+
+    Timer continuation
+    {
+        on_event:expire()
         {
             done(CONTINUE);
         }

@@ -1,0 +1,38 @@
+﻿/******************************************************************************\
+FILE:           std_texts_cn.zm
+AUTHOR:         Chen Ao (UiL-OTS) <A.Chen@uu.nl>
+ADAPTED BY:     Theo Veenker <theo.veenker@beexy.nl>
+
+DESCRIPTION:
+
+Defines texts on buttons and other graphic elements.
+Chinese version.
+
+
+HISTORY:
+2013-02-06 TV   Created as part of the standard Zep modules.
+
+\******************************************************************************/
+
+
+// Button texts.
+const string    CONTINUE_BUTTON_TEXT            = "继续";
+const string    NEXT_BUTTON_TEXT                = "下一步";
+const string    REPEAT_BUTTON_TEXT              = "重复";
+const string    YES_BUTTON_TEXT                 = "对";
+const string    NO_BUTTON_TEXT                  = "不对";
+const string    TRUE_BUTTON_TEXT                = "真";
+const string    FALSE_BUTTON_TEXT               = "假";
+const string    CORRECT_BUTTON_TEXT             = "正确";
+const string    INCORRECT_BUTTON_TEXT           = "错误";
+const string    FIRST_BUTTON_TEXT               = "第一个";
+const string    SECOND_BUTTON_TEXT              = "第二个";
+
+
+// Other texts.
+const string    WELCOME_TEXT                    = "欢迎";
+const string    THANK_YOU_TEXT                  = "实验结束\n\n谢谢";
+
+const string 	INSTRUCTION_TEXT				= "1: Please enter text at ./modules/texts_cn.zm";
+
+const string 	AFTER_PRACTICE_TEXT 			=	"1: Please enter text at ./modules/texts_cn.zm";

@@ -1,0 +1,62 @@
+/******************************************************************************\
+FILE:           defs.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Defines the experiment version, database related settings and trial timing
+setttings.
+
+
+HISTORY:
+2012-01-30 TV   Created.
+
+\******************************************************************************/
+
+
+// Experiment version. In pilot phase and later increment this on each 
+// relevant change.
+const int       EXPERIMENT_VERSION              = 1;
+
+
+// Database number. Typically set to 1.
+const int       DATABASE_NUMBER                 = 1;
+
+
+// ID of default researcher.
+const string    DEFAULT_RESEARCHER_ID           = "JD"; // John Doe
+
+
+// Whether experiment record, researcher record and group record should be
+// checked for updating (true) or reading only (false) during the experiment
+// session. The participant record and experiment session record are always
+// checked out for updating.
+const bool      EXPERIMENT_RECORD_UPDATEABLE    = false;
+const bool      RESEARCHER_RECORD_UPDATEABLE    = false;
+const bool      GROUP_RECORD_UPDATEABLE         = false;
+
+
+// Controls whether the assigned group is shown in the control window. Set 
+// this to false if the experimenter should not be aware of the selected 
+// group.
+const bool      SHOW_ASSIGNED_GROUP             = true;
+
+
+// Number of result tables to generate. 
+const int       NUM_RESULT_TABLES               = 1;
+
+
+// The following are timing parameters and other settings.
+const dur 		FEEDBACK_DURATION				= 0s;	
+
+const dur       RESPONSE_DURATION 				= 3s;
+
+// Duration of the interval between two trials.
+const dur       INTERTRIAL_INTERVAL             = 3s;
+
+// Duration of the fixation symbol presentation.
+const dur       FIXATION_DURATION               = 500ms;
+
+const int 		CORRECT_WINDOW_SIZE 			= 12;
+const int 		MAX_NUMBER_ERROR_IN_WINDOW		= 2;

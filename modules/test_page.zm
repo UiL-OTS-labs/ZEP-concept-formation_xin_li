@@ -1,0 +1,363 @@
+/******************************************************************************\
+FILE:           test_page.zm
+AUTHOR:         Theo Veenker (UiL-OTS) <T.J.G.Veenker@uu.nl>
+ADAPTED BY:     -
+
+DESCRIPTION:
+
+Provides a page object to show to the participant during test phase trials.
+It handles presenting the stimulus and recording the participant's response.
+
+
+HISTORY:
+2012-01-30 TV   Created.
+
+\******************************************************************************/
+
+
+Page test_page
+{
+    TestItem    item;           // trial control parameters
+
+
+    init()
+    {
+        fill_pattern_color = TEST_PAGE_COLOR;
+    }
+
+
+    on_event:key_press()
+    {
+        // Handle left-shift (no) and right-shift (yes).
+        if (input_key == KEY_Shift_L)
+            response.process_hit(0, event_time);
+        else if (input_key == KEY_Shift_R)
+            response.process_hit(1, event_time);
+        else if (input_key == KEY_Escape)
+            done(CONTINUE);
+        else
+            handle_special_key(this, input_key, input_modifiers);
+    }
+
+
+    VerticalLayout layout
+    {
+        init()
+        {
+            spacing = 50;
+            height = 0;     // 0 means as large as possible
+        }
+
+
+        CanvasGadget canvas
+        {
+            init()
+            {
+//                fill_pattern_color = TEST_PAGE_STIMULUS_COLOR;
+                size = 450, 100;
+                offset_x = width / 2;
+                offset_y = height / 2;
+            }
+
+
+            CrossShape fixation
+            {
+                init()
+                {
+                    radius = 15;
+                    line_width = 5;
+                    line_pattern_color = color:crimson;
+                }
+            }
+        }
+
+
+        HorizontalLayout buttons
+        {
+            init()
+            {
+                spacing = 50;
+                options = LAYOUT_EQUAL_WIDTH;
+            }
+
+
+            ButtonGadget button1
+            {
+                init()
+                {
+                    text = NO_BUTTON_TEXT;
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 150, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    response.process_hit(0, event_time);
+                }
+            }
+
+
+            ButtonGadget button2
+            {
+                init()
+                {
+                    text = YES_BUTTON_TEXT;
+                    font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                    font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                    fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                    text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                    size = 150, 75;
+                }
+
+
+                on_event:activate()
+                {
+                    response.process_hit(1, event_time);
+                }
+            }
+        }
+
+        LabelGadget goSignal
+        {
+            int start_width;
+
+            pre_update()
+            {
+                width = int( start_width * real(reverse_relative_frame)/real(expected_num_frames) );
+            }
+
+            init()
+            {
+                start_width = buttons.spacing + buttons.button1.width + buttons.button2.width;
+                width = start_width;
+                height = 20;
+                fill_pattern_color = color:green;
+                is_visible = false;
+            }
+        }
+
+        ButtonGadget again
+        {
+            init()
+            {
+                text = REPEAT_BUTTON_TEXT;
+                font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
+                font_size = TEST_PAGE_BUTTON_FONT_SIZE;
+                fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
+                text_color = TEST_PAGE_BUTTON_TEXT_COLOR;
+                is_visible = false;
+            }
+
+
+            on_event:activate()
+            {
+                stimulus.play(event_time + 100ms, item.sndfn_stimulus);
+            }
+        }
+
+
+        time start_fixation(time t)
+        {
+            // Start fixation cross.
+            canvas.fixation.start(t, FIXATION_DURATION);
+
+            // Return fixation offset time.
+            return canvas.fixation.expected_finish_time;
+        }
+
+
+        void reset()
+        {
+            full_abort();
+            layout.goSignal.stop(now());
+            layout.goSignal.is_visible = false;
+        }
+    }
+
+
+    SoundChain stimulus
+    {
+        // Sound source/producer object.
+
+        SoundFile clip1 {}
+ 
+
+        // Sound sink/consumer object.
+        SoundPlayback playback {}
+
+
+        time play(time t, string sndfn)
+        {
+            abort();
+
+            playback.device = sound_output_device;
+            clip1.file = stimuli_dir() + "sounds/" + sndfn;
+
+            start(t);
+
+            return expected_start_time;
+        }
+    }
+
+
+    Response response
+    {
+        // Response data.
+        int  value;          // response value: 0=no, 1=yes
+        int rt;
+        bool correct;
+
+        void clear()
+        {
+            value = -1;
+            rt = -1;
+            correct = false;
+        }
+
+
+        void process_hit(int val, time t)
+        {
+            HitType validity = hit(t);
+
+            // Accept the first hit in the response interval and end the 
+            // response interval.
+            if (validity == HIT_VALID)
+            {
+                value = val;
+                correct = (item.expected_answer == val);
+                rt = int(reaction_time(0));
+                
+                layout.goSignal.stop(event_time);
+                ignore_remaining_hits();
+                stop();
+            }
+            else if (validity == HIT_TOO_EARLY || validity == HIT_TOO_LATE)
+            {
+                // False alarm. Deal with this if desired.
+            }
+        }
+
+
+        on_event:finish()
+        {
+            layout.goSignal.stop(event_time);
+
+        	real correctness = 0;
+            if (num_valid_hits > 0) correctness = correct ? 1 : -1;
+ 
+            if(correct)
+            {
+                if(item.sndfn_feedback_correct != "")
+                    stimulus.play(event_time, item.sndfn_feedback_correct);
+            } else
+            {
+                if(item.sndfn_feedback_incorrect != "")
+                    stimulus.play(event_time, item.sndfn_feedback_incorrect);
+            }
+
+            if (!test_page_overlay.start_feedback(this, correctness,
+                    stimulus.duration))
+                done(CONTINUE);
+        }
+
+        on_event:start()
+        {
+            layout.goSignal.start(event_time, RESPONSE_DURATION);
+        }
+
+         on_event:message()
+        {
+            done(CONTINUE);
+        }
+    }
+
+
+    // Aborts any ongoing activity on this page and signals the initiator
+    // of the trial that we're done.
+    void done(int msgid)
+    {
+        // Just in case; abort presentation if still active.
+        layout.reset();
+        stimulus.abort();
+
+        signal_target(msgid);   // tell caller we're done
+        target = null;
+
+        control.clear_status();
+    }
+
+
+    //==========================================================================
+
+
+    // Performs preparatory work required before using this page.
+    void setup(int ntrials=-1, bool fb = false, bool pr=false)
+    {
+        test_page_overlay.setup(this);
+
+        // Show or hide prompt.
+        test_page_overlay.show_prompt(pr ? 
+            "Make a correct call" : "", true);
+
+        // Enable or disable feedback.
+        test_page_overlay.enable_feedback(fb);          // disabled if false
+
+        // Enable or disable the progress bar.
+        test_page_overlay.show_progress_bar(ntrials);   // disabled if < 0
+
+        control.target = this;
+    }
+
+
+    // Performs cleaning up if necessary.
+    void cleanup()
+    {
+        test_page_overlay.cleanup();
+    }
+
+
+    // Starts a trial.
+    void action(Object caller, TestItem it, time tref, int count=-1)
+    {
+        // Save passed trial control parameters.
+        item = it;
+
+
+        // Show this page (if not yet done) and make tref the trial start time.
+        tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL - FIXATION_DURATION);
+
+
+        // Reset response data.
+        response.clear();
+
+
+        // Start fixation symbol.
+        time fixoffset = layout.start_fixation(tref);
+
+
+        // Start stimulus at fixation offset.
+        time stimstart = stimulus.play(fixoffset, item.sndfn_stimulus);
+
+
+        // Response interval starts at stimulus offset.
+        response.start(stimstart, RESPONSE_DURATION);
+
+        // Update progress counter (if enabled).
+        test_page_overlay.update_progress_bar(count);
+
+
+        // Update status line on control window. Cleared in done() above.
+        control.set_status(
+            string(item.id) + "  " + 
+            string(item.expected_answer) + "  " + 
+            string(item.sndfn_stimulus));
+
+
+        // Remember who to signal when the trial is over.
+        target = caller;
+    }
+}

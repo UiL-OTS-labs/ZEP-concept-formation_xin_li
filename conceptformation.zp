@@ -96,7 +96,7 @@ Experiment experiment
             num_cycles = test_prac_items.size;
 
             // Prepare test page: progress bar and prompt enabled.
-            test_page.setup(-1, true);
+            test_page.setup(-1, false);
         }
 
 

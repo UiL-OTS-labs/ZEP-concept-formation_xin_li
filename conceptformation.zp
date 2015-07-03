@@ -125,8 +125,8 @@ Experiment experiment
             window.size = CORRECT_WINDOW_SIZE;
             test_prac_items.shuffle(0, -1);
 
-            num_cycles = test_prac_items.size;
-
+            //num_cycles = test_prac_items.size;
+            num_cycles = 0;
             // Prepare test page: progress bar and prompt enabled.
             test_page.setup(-1, true);
         }
@@ -271,7 +271,19 @@ Experiment experiment
                 output.correct = test_page.response.correct;
                 output.rt = test_page.response.rt;
                 test_output_append(output);
+
+                if(!test_page.response.a_response_was_given())
+                    add_item_to_test_items();
             }
+        }
+
+        void add_item_to_test_items()
+        {
+            test_items.size = test_items.size+1;
+            test_items[test_items.size-1] = item;
+            test.num_cycles = test.num_cycles+1;
+
+            test_page_overlay.show_progress_bar(test.num_cycles); 
         }
     }
 

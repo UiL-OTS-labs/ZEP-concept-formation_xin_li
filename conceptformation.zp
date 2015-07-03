@@ -131,7 +131,6 @@ Experiment experiment
             test_prac_items.shuffle(0, -1);
 
             num_cycles = test_prac_items.size;
-            num_cycles = 0;
 
             // Prepare test page: progress bar and prompt enabled.
             test_page.setup(-1, true);

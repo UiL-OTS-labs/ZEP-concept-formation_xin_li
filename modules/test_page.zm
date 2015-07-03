@@ -25,6 +25,11 @@ Page test_page
         fill_pattern_color = TEST_PAGE_COLOR;
     }
 
+    on_event:message()
+    {
+        if (message_sender == control)
+            response.process_hit(message_arg, event_time);
+    }
 
     on_event:key_press()
     {
@@ -213,8 +218,8 @@ Page test_page
 
         void clear()
         {
-            value = -1;
-            rt = -1;
+            value = -9999;
+            rt = -9999;
             correct = false;
         }
 
@@ -334,6 +339,10 @@ Page test_page
     void cleanup()
     {
         test_page_overlay.cleanup();
+
+        control.button_box.disable_buttons();
+        if(control.target == this)
+            control.target = null;
     }
 
 
@@ -343,6 +352,12 @@ Page test_page
         // Save passed trial control parameters.
         item = it;
 
+        // Enable button-box buttons.
+        control.target = this;
+        control.button_box.disable_buttons();
+        
+        control.button_box.enable_button(0,0);
+        control.button_box.enable_button(1,1);
 
         // Show this page (if not yet done) and make tref the trial start time.
         tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL - FIXATION_DURATION);

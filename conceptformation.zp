@@ -55,6 +55,11 @@ Experiment experiment
 {
     on_event:entry()
     {
+
+        control.button_box.open();
+        control.button_box.output(0x02); // If necessary set parallel port line D0 to power button box device (required on most new systems)
+        control.button_box.enable_all_buttons(CONTINUE);
+        
         show_test_windows();
     }
 
@@ -126,6 +131,7 @@ Experiment experiment
             test_prac_items.shuffle(0, -1);
 
             num_cycles = test_prac_items.size;
+            num_cycles = 0;
 
             // Prepare test page: progress bar and prompt enabled.
             test_page.setup(-1, true);

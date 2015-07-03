@@ -246,9 +246,6 @@ Page test_page
         {
             layout.goSignal.stop(event_time);
 
-        	real correctness = 0;
-            if (num_valid_hits > 0) correctness = correct ? 1 : -1;
- 
             if(correct)
             {
                 if(item.sndfn_feedback_correct != "")
@@ -259,9 +256,17 @@ Page test_page
                     stimulus.play(event_time, item.sndfn_feedback_incorrect);
             }
 
-            if (!test_page_overlay.start_feedback(this, correctness,
-                  stimulus.duration))
-                continuation.start(stimulus.expected_finish_time);
+            real show_question_mark = 0;
+
+            if (!a_response_was_given())
+                test_page_overlay.start_feedback(this, show_question_mark, stimulus.duration);
+            else
+                done(CONTINUE);
+        }
+
+        bool a_response_was_given()
+        {
+            return num_valid_hits > 0;
         }
 
         on_event:start()
@@ -270,14 +275,6 @@ Page test_page
         }
 
          on_event:message()
-        {
-            done(CONTINUE);
-        }
-    }
-
-    Timer continuation
-    {
-        on_event:expire()
         {
             done(CONTINUE);
         }

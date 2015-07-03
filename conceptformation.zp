@@ -128,7 +128,7 @@ Experiment experiment
             num_cycles = test_prac_items.size;
 
             // Prepare test page: progress bar and prompt enabled.
-            test_page.setup(-1, false);
+            test_page.setup(-1, true);
         }
 
 
@@ -235,7 +235,7 @@ Experiment experiment
             num_cycles = test_items.size;
 
             // Prepare test page: progress bar enabled, prompt disabled.
-            test_page.setup(num_cycles, false);
+            test_page.setup(num_cycles, true);
         }
 
 

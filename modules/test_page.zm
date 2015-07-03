@@ -261,9 +261,21 @@ Page test_page
             if (!a_response_was_given())
                 test_page_overlay.start_feedback(this, show_question_mark, stimulus.duration);
             else
-                done(CONTINUE);
+            {
+                if(stimulus.is_busy)
+                    continuation.start(stimulus.expected_finish_time);
+                else
+                    done(CONTINUE);
+            }
         }
 
+        Timer continuation {
+            on_event:expire()
+            {
+                done(CONTINUE);
+            }
+
+        }
         bool a_response_was_given()
         {
             return num_valid_hits > 0;
@@ -357,9 +369,9 @@ Page test_page
 
         // Update status line on control window. Cleared in done() above.
         control.set_status(
-            string(item.id) + "  " + 
-            string(item.expected_answer) + "  " + 
-            string(item.sndfn_stimulus));
+            "Item id: " + string(item.id) + "  " + 
+            " Expected R: " + string(item.expected_answer) + "  " + 
+           " Audio: " +  string(item.sndfn_stimulus));
 
 
         // Remember who to signal when the trial is over.

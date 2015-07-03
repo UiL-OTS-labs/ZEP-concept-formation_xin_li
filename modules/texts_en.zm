@@ -47,6 +47,11 @@ const string 	INSTRUCTION_TEXT				= "<b>Dear participant,</b>\n"
                 "\n"
                 "<i>Hit Enter when ready to start.</i>";
 
+const string    INSTRUCTION_TEXT2                               = 
+"<b>second Instruction text</b>\n"
+"\n"
+"<i>Hit Enter when ready to start.</i>";
+
 const string AFTER_PRACTICE_TEXT =   "End of the practice part.\n"
                 "\n"
                 "If you have any questions at this moment please ask the "

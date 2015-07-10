@@ -14,6 +14,11 @@ HISTORY:
 \******************************************************************************/
 
 
+enum Side
+{
+    LEFT,
+    RIGHT
+}
 // Creates required participant record fields.
 void create_participant_fields()
 {
@@ -26,9 +31,9 @@ int check_participant_fields()
 {
     if(!expdb.participant.has_enum_field("Handedness"))
         return ERROR;
-    
+
     if(expdb.participant.get_enum_field("Handedness") == "")
-        expdb.participant.set_field("Handedness","right");
+        expdb.participant.set_enum_field("Handedness","right");
 
     return OK;
 }

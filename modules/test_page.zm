@@ -35,9 +35,9 @@ Page test_page
     {
         // Handle left-shift (no) and right-shift (yes).
         if (input_key == KEY_Shift_L)
-            response.process_hit(0, event_time);
+            response.process_hit(experiment.side_response_signal_map[LEFT], event_time);
         else if (input_key == KEY_Shift_R)
-            response.process_hit(1, event_time);
+            response.process_hit(experiment.side_response_signal_map[RIGHT], event_time);
         else if (input_key == KEY_Escape)
             done(CONTINUE);
         else
@@ -90,7 +90,7 @@ Page test_page
             {
                 init()
                 {
-                    text = NO_BUTTON_TEXT;
+                    text = "PLACEHOLDER1";
                     font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
                     font_size = TEST_PAGE_BUTTON_FONT_SIZE;
                     fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
@@ -101,7 +101,7 @@ Page test_page
 
                 on_event:activate()
                 {
-                    response.process_hit(0, event_time);
+                    response.process_hit(experiment.side_response_signal_map[LEFT], event_time);
                 }
             }
 
@@ -110,7 +110,7 @@ Page test_page
             {
                 init()
                 {
-                    text = YES_BUTTON_TEXT;
+                    text = "PLACEHOLDER2";
                     font_family = TEST_PAGE_BUTTON_FONT_FAMILY;
                     font_size = TEST_PAGE_BUTTON_FONT_SIZE;
                     fill_pattern_color = TEST_PAGE_BUTTON_COLOR;
@@ -121,8 +121,14 @@ Page test_page
 
                 on_event:activate()
                 {
-                    response.process_hit(1, event_time);
+                    response.process_hit(experiment.side_response_signal_map[RIGHT], event_time);
                 }
+            }
+
+            void set_text()
+            {
+                button1.text = experiment.side_button_map_description[LEFT];
+                button2.text = experiment.side_button_map_description[RIGHT];
             }
         }
 
@@ -332,6 +338,8 @@ Page test_page
         test_page_overlay.show_progress_bar(ntrials);   // disabled if < 0
 
         control.target = this;
+
+        layout.buttons.set_text();
     }
 
 
@@ -356,8 +364,8 @@ Page test_page
         control.target = this;
         control.button_box.disable_buttons();
         
-        control.button_box.enable_button(0,0);
-        control.button_box.enable_button(1,1);
+        control.button_box.enable_button(0, experiment.side_response_signal_map[LEFT]);
+        control.button_box.enable_button(1, experiment.side_response_signal_map[RIGHT]);
 
         // Show this page (if not yet done) and make tref the trial start time.
         tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL - FIXATION_DURATION);

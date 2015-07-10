@@ -53,8 +53,18 @@ import test_page;
 
 Experiment experiment
 {
+
+    //button box
+    int[..] side_response_signal_map;
+
+    //control buttons
+    string[..] side_button_map_description;
+
+    Side DOMINANT_SIDE;
+
     on_event:entry()
     {
+        set_up_side_variables();
 
         control.button_box.open();
         control.button_box.output(0x02); // If necessary set parallel port line D0 to power button box device (required on most new systems)
@@ -68,6 +78,38 @@ Experiment experiment
         show_test_windows();
     }
 
+    void set_up_side_variables()
+    {
+
+        if(expdb.participant.get_enum_field("Handedness") == "right")
+            experiment.DOMINANT_SIDE = RIGHT;
+        else
+            experiment.DOMINANT_SIDE = LEFT;
+        
+        experiment.side_response_signal_map.size = 2;
+        if(experiment.DOMINANT_SIDE == RIGHT)
+        {
+            experiment.side_response_signal_map[LEFT] = 0;
+            experiment.side_response_signal_map[RIGHT] = 1;
+        }
+        else if(experiment.DOMINANT_SIDE == LEFT)
+        {
+            experiment.side_response_signal_map[LEFT] = 1;
+            experiment.side_response_signal_map[RIGHT] = 0;
+        }
+
+        side_button_map_description.size = 2;
+         if(experiment.DOMINANT_SIDE == RIGHT)
+        {
+            experiment.side_button_map_description[LEFT] = NO_BUTTON_TEXT;
+            experiment.side_button_map_description[RIGHT] = YES_BUTTON_TEXT;
+        }
+        else if(experiment.DOMINANT_SIDE == LEFT)
+        {
+            experiment.side_button_map_description[LEFT] = YES_BUTTON_TEXT;
+            experiment.side_button_map_description[RIGHT] = NO_BUTTON_TEXT;
+        }
+    }
 
     Part welcome
     {

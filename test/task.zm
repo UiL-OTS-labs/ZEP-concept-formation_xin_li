@@ -1,0 +1,230 @@
+
+
+Block task
+{
+    Part instructions
+    {
+        on_event:entry()
+        {
+//            pause_page.set_text_size(1000, 600);
+            pause_page.set_text(INSTRUCTION_TEXT, true);
+
+            pause_page.action(this);
+        }
+    }
+
+     Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+
+    Part instructions2
+    {
+        on_event:entry()
+        {
+//            pause_page.set_text_size(1000, 600);
+            pause_page.set_text(INSTRUCTION_TEXT2, true);
+
+            pause_page.action(this);
+        }
+    }
+
+     Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+
+    Block practice
+    {
+        TestItem        item;   // current item
+        bool[..]         window;
+
+        on_event:entry()
+        {
+            if(shuffle_test_prac_items() != OK)
+            {
+                println("ERROR: could not shuffle test_prac_items!");
+                terminate;
+            }
+
+            window.size = 0;
+
+            window.size = CORRECT_WINDOW_SIZE;
+
+            num_cycles = test_prac_items.size;
+
+            // Prepare test page: progress bar and prompt enabled.
+            test_page.setup(-1, true);
+        }
+
+
+        on_event:exit()
+        {
+            test_page.cleanup();
+            test_output_save(2);
+        }
+
+
+        Trial trial
+        {
+            bool repeat_flag = false;
+            bool succes = false;
+
+            on_event:entry()
+            {
+                if(repeat_flag)
+                {
+                    practice.cycle = 0;
+                    repeat_flag = false;
+                }
+                item = test_prac_items[practice.cycle];
+                test_page.action(this, item, reference_time, practice.cycle);
+            }
+            
+            on_event:exit()
+            {
+                // Add new row to test output table.
+                TestOutput output;
+                output.trialnum = practice.cycle + 1;
+                output.id = item.id;
+                output.stimulus_soundfile = item.sndfn_stimulus;
+                output.feedback_soundfile = test_page.response.correct ? item.sndfn_feedback_correct : item.sndfn_feedback_incorrect;
+                output.expected_value = item.expected_answer;
+                output.value = test_page.response.value;
+                output.correct = test_page.response.correct;
+                output.rt = test_page.response.rt;
+                test_output_append(output);
+
+                 // Shift the window, left one is always considered to be furthest temporally removed from current trial.
+                int i = 0;
+                while(i < window.size - 1)
+                {
+                    window[i] = window[i+1];
+                    i++;
+                }
+                window[window.size-1] = test_page.response.correct;
+                
+                // count the errors, inefficient but easy to read.
+                int j = 0;
+                int errors=0;
+                while(j < window.size)
+                {
+                    if(!window[j])
+                        errors++;
+                    j++;
+                }
+
+                if(practice.cycle+1 >= CORRECT_WINDOW_SIZE && errors <= MAX_NUMBER_ERROR_IN_WINDOW) //beyond the minimum and low enough number of errors...
+                {
+                    practice.num_cycles = practice.cycle+1;
+                    succes = true;
+                }
+
+                if(!succes && practice.cycle == practice.num_cycles-1) // we are not succesfull and have gotten to the end of the practice round...
+                {
+                    repeat_flag = true;
+                    practice.cycle = 0;
+                }
+            }
+        }
+    }
+
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms);
+        }
+    }
+
+    Part pause
+    {
+        on_event:entry()
+        {
+            pause_page.set_text(AFTER_PRACTICE_TEXT, true);
+
+            pause_page.action(this);
+        }
+    }
+
+
+    Block test
+    {
+        TestItem        item;   // current item
+
+
+        on_event:entry()
+        {
+            // Randomize test items table.
+            test_items.shuffle(0,-1);
+
+            num_cycles = test_items.size;
+
+            // Prepare test page: progress bar enabled, prompt disabled.
+            test_page.setup(num_cycles, true);
+        }
+
+
+        on_event:exit()
+        {
+            test_page.cleanup();
+
+            // Save test phase output table as CSV file.
+            test_output_save(1);
+        }
+
+
+        Trial trial
+        {
+            on_event:entry()
+            {
+                item = test_items[test.cycle];
+
+                test_page.action(this, item, reference_time, test.cycle);
+            }
+
+
+            on_event:exit()
+            {
+                // Add new row to test output table.
+                TestOutput output;
+                output.trialnum = test.cycle + 1;
+                output.id = item.id;
+                output.type = experiment.SOUND_TYPE;
+                output.stimulus_soundfile = item.sndfn_stimulus;
+                output.feedback_soundfile = test_page.response.correct ? item.sndfn_feedback_correct : item.sndfn_feedback_incorrect;
+                output.expected_value = item.expected_answer;
+                output.value = test_page.response.value;
+                output.correct = test_page.response.correct;
+                output.rt = test_page.response.rt;
+                test_output_append(output);
+
+                if(!test_page.response.a_response_was_given())
+                    add_item_to_test_items();
+            }
+        }
+
+        void add_item_to_test_items()
+        {
+            test_items.size = test_items.size+1;
+            test_items[test_items.size-1] = item;
+            test.num_cycles = test.num_cycles+1;
+
+            test_page_overlay.show_progress_bar(test.num_cycles); 
+        }
+    }
+}
+
+
+void action(Part caller)
+{
+    // Activate the task. When the task is done, the registered caller
+    // (c.q. the main experiment object) will automatically be signalled.
+    task.enter(caller);
+}

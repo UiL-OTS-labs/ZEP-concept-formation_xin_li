@@ -206,7 +206,7 @@ Page test_page
             abort();
 
             playback.device = sound_output_device;
-            clip1.file = stimuli_dir() + "sounds/" + sndfn;
+            clip1.file = stimuli_dir() + "sounds/" + experiment.SOUND_TYPE + "/"+ sndfn;
 
             start(t);
 
@@ -394,7 +394,8 @@ Page test_page
         control.set_status(
             "Item id: " + string(item.id) + "  " + 
             " Expected R: " + string(item.expected_answer) + "  " + 
-           " Audio: " +  string(item.sndfn_stimulus));
+           " Audio: " +  string(item.sndfn_stimulus)
+           + " Type: " + string(experiment.SOUND_TYPE));
 
 
         // Remember who to signal when the trial is over.

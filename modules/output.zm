@@ -22,6 +22,7 @@ record TestOutput
 
     int         id;             // item id
 
+    ItemType type;
     string      stimulus_soundfile;          // stimulus sound filename
     string      feedback_soundfile;          // stimulus sound filename
 

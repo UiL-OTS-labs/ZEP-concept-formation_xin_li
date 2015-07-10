@@ -25,7 +25,6 @@ record TestItem
     int         expected_answer;
 }
 
-
 // Item table used in the practice phase before the test phase.
 //   index: item number
 TestItem[..] test_prac_items =

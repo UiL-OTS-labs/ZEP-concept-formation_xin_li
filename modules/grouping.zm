@@ -21,10 +21,16 @@ enum TestGroup
     GRP2
 }
 
-int[..][..] GROUP_ORDER = 
+enum ItemType
 {
-	{1,2},
-	{2,1},
+    WORD,
+    NONWORD
+}
+
+ItemType[..][..] GROUP_ORDER = 
+{
+	{WORD,NONWORD}, //GRP1
+	{NONWORD,WORD}, //GRP2
 };
 
 
@@ -32,5 +38,5 @@ int[..][..] GROUP_ORDER =
 int assign_participant_to_group()
 {
     // Assign to first (i.e default) group.
-    return select_group_default();
+    return select_group_from_num_sessions();
 }

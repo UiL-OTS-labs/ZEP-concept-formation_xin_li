@@ -49,6 +49,7 @@ import texts_en;
 //import texts_cn;
 import participant;
 import test_page;
+import shuffle;
 
 
 Experiment experiment
@@ -172,6 +173,11 @@ Experiment experiment
 
         on_event:entry()
         {
+            if(shuffle_test_prac_items() != OK)
+            {
+                println("ERROR: could not shuffle test_prac_items!");
+                terminate;
+            }
             window.size = 0;
 
             window.size = CORRECT_WINDOW_SIZE;

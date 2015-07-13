@@ -93,6 +93,7 @@ Block task
                 TestOutput output;
                 output.trialnum = practice.cycle + 1;
                 output.id = item.id;
+                output.type = experiment.SOUND_TYPE;
                 output.stimulus_soundfile = item.sndfn_stimulus;
                 output.feedback_soundfile = test_page.response.correct ? item.sndfn_feedback_correct : item.sndfn_feedback_incorrect;
                 output.expected_value = item.expected_answer;

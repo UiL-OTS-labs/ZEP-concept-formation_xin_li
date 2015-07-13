@@ -139,24 +139,6 @@ Experiment experiment
         }
     }
 
-
-    Part
-    {
-        on_event:entry()
-        {
-            blank_page.action_auto(this, 500ms, 500ms);
-        }
-    }
-
-     Part part2
-    {
-        on_event:entry()
-        {
-            SOUND_TYPE = GROUP_ORDER[selected_group][1];
-            test::action(this);
-        }
-    }
-
     Part
     {
         on_event:entry()
@@ -174,6 +156,25 @@ Experiment experiment
             pause_page.action(this);
         }
     }
+    
+    Part
+    {
+        on_event:entry()
+        {
+            blank_page.action_auto(this, 500ms, 500ms);
+        }
+    }
+
+     Part part2
+    {
+        on_event:entry()
+        {
+            SOUND_TYPE = GROUP_ORDER[selected_group][1];
+            test::action(this);
+        }
+    }
+
+    
 
     Part
     {

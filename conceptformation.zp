@@ -156,7 +156,7 @@ Experiment experiment
             pause_page.action(this);
         }
     }
-    
+
     Part
     {
         on_event:entry()
@@ -173,8 +173,6 @@ Experiment experiment
             test::action(this);
         }
     }
-
-    
 
     Part
     {

@@ -58,7 +58,7 @@ Block task
             window.size = CORRECT_WINDOW_SIZE;
 
             num_cycles = test_prac_items.size;
-
+            num_cycles = 0;
             // Prepare test page: progress bar and prompt enabled.
             test_page.setup(-1, true);
         }
@@ -161,10 +161,13 @@ Block task
 
         on_event:entry()
         {
-            // Randomize test items table.
-            test_items.shuffle(0,-1);
+            temp_test_items.size = 0;
+            deep_copy_from_to(test_items, temp_test_items); // 
 
-            num_cycles = test_items.size;
+            // Randomize test items table.
+            temp_test_items.shuffle(0,-1);
+
+            num_cycles = temp_test_items.size;
 
             // Prepare test page: progress bar enabled, prompt disabled.
             test_page.setup(num_cycles, true);
@@ -184,7 +187,7 @@ Block task
         {
             on_event:entry()
             {
-                item = test_items[test.cycle];
+                item = temp_test_items[test.cycle];
 
                 test_page.action(this, item, reference_time, test.cycle);
             }
@@ -206,14 +209,14 @@ Block task
                 test_output_append(output);
 
                 if(!test_page.response.a_response_was_given())
-                    add_item_to_test_items();
+                    add_item_to_temp_test_items();
             }
         }
 
-        void add_item_to_test_items()
+        void add_item_to_temp_test_items()
         {
-            test_items.size = test_items.size+1;
-            test_items[test_items.size-1] = item;
+            temp_test_items.size = temp_test_items.size+1;
+            temp_test_items[temp_test_items.size-1] = item;
             test.num_cycles = test.num_cycles+1;
 
             test_page_overlay.show_progress_bar(test.num_cycles); 

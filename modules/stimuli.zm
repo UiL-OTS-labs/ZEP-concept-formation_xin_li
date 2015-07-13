@@ -105,5 +105,17 @@ TestItem[..] test_items =
     {22,         "negtest6.wav",     "",     "",   0},
     {23,         "negtest7.wav",     "",     "",   0},
     {24,         "negtest8.wav",     "",     "",   0},
-	
 };
+
+TestItem[..] temp_test_items;
+
+void deep_copy_from_to(TestItem[] source, TestItem[] target)
+{
+    int index = 0;
+    target.size = source.size;
+    while(index < source.size)
+    {
+        target[index] = source[index];
+        index++;
+    }
+}

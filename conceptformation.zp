@@ -57,7 +57,8 @@ Experiment experiment
 {
 
     //button box
-    int[..] side_response_signal_map;
+    int[..] side_response_signal_map_BUTTONBOX;
+    int[..] side_response_signal_map_KEYS;
 
     //control buttons
     string[..] side_button_map_description;
@@ -82,22 +83,27 @@ Experiment experiment
 
     void set_up_side_variables()
     {
-
         if(expdb.participant.get_enum_field("Handedness") == "right")
             experiment.DOMINANT_SIDE = RIGHT;
         else
             experiment.DOMINANT_SIDE = LEFT;
-        
-        experiment.side_response_signal_map.size = 2;
+
+        experiment.side_response_signal_map_BUTTONBOX.size = 2;
+        experiment.side_response_signal_map_KEYS.size = 2;
         if(experiment.DOMINANT_SIDE == RIGHT)
         {
-            experiment.side_response_signal_map[LEFT] = 0;
-            experiment.side_response_signal_map[RIGHT] = 1;
+            experiment.side_response_signal_map_BUTTONBOX[LEFT] = 0;
+            experiment.side_response_signal_map_BUTTONBOX[RIGHT] = 1;
+             experiment.side_response_signal_map_KEYS[LEFT] = 0;
+            experiment.side_response_signal_map_KEYS[RIGHT] = 1;
         }
         else if(experiment.DOMINANT_SIDE == LEFT)
         {
-            experiment.side_response_signal_map[LEFT] = 1;
-            experiment.side_response_signal_map[RIGHT] = 0;
+            experiment.side_response_signal_map_BUTTONBOX[LEFT] = 0;
+            experiment.side_response_signal_map_BUTTONBOX[RIGHT] = 1;
+             experiment.side_response_signal_map_KEYS[LEFT] = 1;
+            experiment.side_response_signal_map_KEYS[RIGHT] = 0;
+            ctrl_window.show_error(BUTTON_BOX_LEFT_WARNING, true);
         }
 
         side_button_map_description.size = 2;

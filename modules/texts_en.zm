@@ -61,3 +61,5 @@ const string AFTER_PRACTICE_TEXT =   "End of the practice part.\n"
                 "experimenter now.\n"
                 "\n"
                 "<i>Hit Enter when ready to proceed.</i>";
+
+const string BUTTON_BOX_LEFT_WARNING = "NOTE! Make sure the buttonbox is positioned with the <b>cord</b> on the <b>left</b>!";

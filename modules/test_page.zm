@@ -35,9 +35,9 @@ Page test_page
     {
         // Handle left-shift (no) and right-shift (yes).
         if (input_key == KEY_Shift_L)
-            response.process_hit(experiment.side_response_signal_map[LEFT], event_time);
+            response.process_hit(experiment.side_response_signal_map_KEYS[LEFT], event_time);
         else if (input_key == KEY_Shift_R)
-            response.process_hit(experiment.side_response_signal_map[RIGHT], event_time);
+            response.process_hit(experiment.side_response_signal_map_KEYS[RIGHT], event_time);
         else if (input_key == KEY_Escape)
             done(CONTINUE);
         else
@@ -101,7 +101,7 @@ Page test_page
 
                 on_event:activate()
                 {
-                    response.process_hit(experiment.side_response_signal_map[LEFT], event_time);
+                    response.process_hit(experiment.side_response_signal_map_KEYS[LEFT], event_time);
                 }
             }
 
@@ -121,7 +121,7 @@ Page test_page
 
                 on_event:activate()
                 {
-                    response.process_hit(experiment.side_response_signal_map[RIGHT], event_time);
+                    response.process_hit(experiment.side_response_signal_map_KEYS[RIGHT], event_time);
                 }
             }
 
@@ -364,8 +364,8 @@ Page test_page
         control.target = this;
         control.button_box.disable_buttons();
         
-        control.button_box.enable_button(0, experiment.side_response_signal_map[LEFT]);
-        control.button_box.enable_button(1, experiment.side_response_signal_map[RIGHT]);
+        control.button_box.enable_button(0, experiment.side_response_signal_map_BUTTONBOX[LEFT]);
+        control.button_box.enable_button(1, experiment.side_response_signal_map_BUTTONBOX[RIGHT]);
 
         // Show this page (if not yet done) and make tref the trial start time.
         tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL - FIXATION_DURATION);

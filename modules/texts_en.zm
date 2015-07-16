@@ -19,6 +19,7 @@ HISTORY:
 const string    CONTINUE_BUTTON_TEXT            = "Continue";
 const string    NEXT_BUTTON_TEXT                = "Next";
 const string    REPEAT_BUTTON_TEXT              = "Repeat";
+const string    PREVIOUS_BUTTON_TEXT            = "Previous";
 const string    YES_BUTTON_TEXT                 = "Target";
 const string    NO_BUTTON_TEXT                  = "Not Target";
 const string    TRUE_BUTTON_TEXT                = "True";

@@ -39,7 +39,10 @@ Page test_page
         else if (input_key == KEY_Shift_R)
             response.process_hit(experiment.side_response_signal_map_KEYS[RIGHT], event_time);
         else if (input_key == KEY_Escape)
+        {
+            response.process_hit(1,response.start_time+10ms);
             done(CONTINUE);
+        }
         else
             handle_special_key(this, input_key, input_modifiers);
     }
@@ -287,6 +290,7 @@ Page test_page
             }
 
         }
+
         bool a_response_was_given()
         {
             return num_valid_hits > 0;

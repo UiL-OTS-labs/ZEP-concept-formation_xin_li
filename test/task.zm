@@ -52,6 +52,8 @@ Block task
 
         on_event:entry()
         {
+            trial.setup();
+
             if(shuffle_test_prac_items() != OK)
             {
                 println("ERROR: could not shuffle test_prac_items!");
@@ -59,9 +61,6 @@ Block task
             }
 
             window.size = 0;
-
-            window.size = CORRECT_WINDOW_SIZE;
-
             num_cycles = test_prac_items.size;
 
             // Prepare test page: progress bar and prompt enabled.
@@ -78,8 +77,12 @@ Block task
 
         Trial trial
         {
-            bool repeat_flag = false;
-            bool succes = false;
+            bool repeat_flag;
+
+             void setup()
+             {
+                repeat_flag = false;
+             }
 
             on_event:entry()
             {
@@ -107,16 +110,42 @@ Block task
                 output.rt = test_page.response.rt;
                 test_output_append(output);
 
-                 // Shift the window, left one is always considered to be furthest temporally removed from current trial.
-                int i = 0;
-                while(i < window.size - 1)
-                {
-                    window[i] = window[i+1];
-                    i++;
-                }
+                shift_and_add_to_window(test_page.response.correct);
+
+                if(allowed_to_continue()) //beyond the minimum and low enough number of errors...
+                    finish_block();
+                else if(practice.cycle == practice.num_cycles-1) // at the end of the practice round...
+                    reset_block();
+            }
+        }
+
+        bool allowed_to_continue()
+        {
+            int number_of_errors = count_number_of_errors_in_window();
+            return practice.cycle+1 >= CORRECT_WINDOW_SIZE && number_of_errors <= MAX_NUMBER_ERROR_IN_WINDOW;
+        }
+
+        void shift_and_add_to_window(bool addition_item)
+        {
+                 if(window.size < CORRECT_WINDOW_SIZE)
+                 {
+                    window.size = window.size+1;
+                 }
+                 else
+                 {
+                     int index = 0;
+                    while(index < window.size-1)
+                    {
+                        window[index] = window[index+1];
+                        index++;
+                    }
+                 }               
                 window[window.size-1] = test_page.response.correct;
-                
-                // count the errors, inefficient but easy to read.
+        }
+
+        int count_number_of_errors_in_window()
+        {
+             // count the errors, inefficient but easy to read.
                 int j = 0;
                 int errors=0;
                 while(j < window.size)
@@ -125,20 +154,19 @@ Block task
                         errors++;
                     j++;
                 }
-
-                if(practice.cycle+1 >= CORRECT_WINDOW_SIZE && errors <= MAX_NUMBER_ERROR_IN_WINDOW) //beyond the minimum and low enough number of errors...
-                {
-                    practice.num_cycles = practice.cycle+1;
-                    succes = true;
-                }
-
-                if(!succes && practice.cycle == practice.num_cycles-1) // we are not succesfull and have gotten to the end of the practice round...
-                {
-                    repeat_flag = true;
-                    practice.cycle = 0;
-                }
-            }
+                return errors;
         }
+
+        void finish_block()
+        {
+            practice.num_cycles = practice.cycle+1;
+        }
+
+        void reset_block()
+        {
+            trial.repeat_flag = true;
+            practice.cycle = 0;
+        } 
     }
 
     Part

@@ -194,8 +194,8 @@ Experiment experiment
         {
             control.end_experiment();   // Check-in session.
 
-            exit_page.set_text(THANK_YOU_TEXT);
-            exit_page.action(this, 10s);
+            pause_page.set_text(THANK_YOU_TEXT);
+            pause_page.action(this);
         }
     }
 }

@@ -41,6 +41,7 @@ Page test_page
         else if (input_key == KEY_Escape)
         {
             response.process_hit(1,response.start_time+10ms);
+            
             done(CONTINUE);
         }
         else

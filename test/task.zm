@@ -122,7 +122,7 @@ Block task
         bool allowed_to_continue()
         {
             int number_of_errors = count_number_of_errors_in_window();
-            return practice.cycle+1 >= CORRECT_WINDOW_SIZE && number_of_errors <= MAX_NUMBER_ERROR_IN_WINDOW;
+            return window.size >= CORRECT_WINDOW_SIZE && number_of_errors <= MAX_NUMBER_ERROR_IN_WINDOW;
         }
 
         void shift_and_add_to_window(bool addition_item)
@@ -140,7 +140,7 @@ Block task
                         index++;
                     }
                  }               
-                window[window.size-1] = test_page.response.correct;
+                window[window.size-1] = addition_item;
         }
 
         int count_number_of_errors_in_window()
@@ -159,6 +159,7 @@ Block task
 
         void finish_block()
         {
+            println("FINISHED BLOCK");
             practice.num_cycles = practice.cycle+1;
         }
 

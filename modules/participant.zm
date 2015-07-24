@@ -23,14 +23,31 @@ enum Side
 void create_participant_fields()
 {
     expdb.participant.add_enum_field("Handedness", "right|left");
+    expdb.participant.add_int_field("Sandhi");
+    expdb.participant.add_int_field("Training_Tone");
+    expdb.participant.add_enum_field("Language", "NL|BJ|NJ");
+    expdb.participant.add_enum_field("Gender", "M|F|O");
 }
-
 
 // Checks current values of participant record fields.
 int check_participant_fields()
 {
     if(!expdb.participant.has_enum_field("Handedness"))
         return ERROR;
+    if(!expdb.participant.has_int_field("Sandhi"))
+        return ERROR;
+    if(!expdb.participant.has_int_field("Training_Tone"))
+        return ERROR;
+    if(!expdb.participant.has_enum_field("Language"))
+        return ERROR;
+    if(!expdb.participant.has_enum_field("Gender"))
+        return ERROR;
+
+    
+    if(expdb.participant.get_int_field("Sandhi") != 1 && expdb.participant.get_int_field("Sandhi") != 2)
+    	return ERROR;
+    if(expdb.participant.get_int_field("Training_Tone") != 1 && expdb.participant.get_int_field("Training_Tone") != 4)
+    	return ERROR;
 
     if(expdb.participant.get_enum_field("Handedness") == "")
         expdb.participant.set_enum_field("Handedness","right");

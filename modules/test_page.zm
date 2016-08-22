@@ -370,7 +370,7 @@ Page test_page
         control.button_box.disable_buttons();
         
         control.button_box.enable_button(0, experiment.side_response_signal_map_BUTTONBOX[LEFT]);
-        control.button_box.enable_button(1, experiment.side_response_signal_map_BUTTONBOX[RIGHT]);
+        control.button_box.enable_button(2, experiment.side_response_signal_map_BUTTONBOX[RIGHT]);
 
         // Show this page (if not yet done) and make tref the trial start time.
         tref = test_window1.show_test_page(this, tref + INTERTRIAL_INTERVAL - FIXATION_DURATION);
